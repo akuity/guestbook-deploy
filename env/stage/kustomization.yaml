@@ -6,4 +6,4 @@ resources:
 
 images:
 - name: ghcr.io/akuity/guestbook
-  newTag: 00002-ab420ec
+  newTag: 00003-e239592
