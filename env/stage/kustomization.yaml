@@ -5,19 +5,19 @@ resources:
 - ../../base
 
 patchesJson6902:
-- target:
-    version: v1
-    group: networking.k8s.io
-    kind: Ingress
-    name: guestbook
-  patch: |-
+- patch: |-
     - op: replace
       path: /spec/rules/0/host
       value: guestbook-stage.demo.akuity.io
     - op: replace
       path: /spec/tls/0/hosts/0
       value: guestbook-stage.demo.akuity.io
+  target:
+    group: networking.k8s.io
+    kind: Ingress
+    name: guestbook
+    version: v1
 
 images:
 - name: ghcr.io/akuity/guestbook
-  newTag: 00006-db8dbb7
+  newTag: 00007-c050724
