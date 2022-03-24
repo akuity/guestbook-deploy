@@ -4,6 +4,20 @@ kind: Kustomization
 resources:
 - ../../base
 
+patchesJson6902:
+- target:
+    version: v1
+    group: networking.k8s.io
+    kind: Ingress
+    name: guestbook
+  patch: |-
+    - op: replace
+      path: /spec/rules/0/host
+      value: guestbook.demo.akuity.io
+    - op: replace
+      path: /spec/tls/0/hosts/0
+      value: guestbook.demo.akuity.io
+
 images:
 - name: ghcr.io/akuity/guestbook
   newTag: 00001-0e99f24

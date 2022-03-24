@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
 - guestbook-deploy.yaml
 - guestbook-svc.yaml
+- guestbook-ing.yaml
