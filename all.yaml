@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: guestbook
+spec:
+  ports:
+  - port: 3000
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    app: guestbook
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: guestbook
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: guestbook
+  template:
+    metadata:
+      labels:
+        app: guestbook
+    spec:
+      containers:
+      - image: ghcr.io/akuity/guestbook:00001-0e99f24
+        name: guestbook
+        ports:
+        - containerPort: 3000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+    kubernetes.io/tls-acme: "true"
+  name: guestbook
+spec:
+  ingressClassName: contour
+  rules:
+  - host: guestbook.demo.akuity.io
+    http:
+      paths:
+      - backend:
+          service:
+            name: guestbook
+            port:
+              number: 3000
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - guestbook.demo.akuity.io
+    secretName: guestbook-tls
