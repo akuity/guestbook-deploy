@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: guestbook
 spec:
+  replicas: 2
   template:
     spec:
       containers:
