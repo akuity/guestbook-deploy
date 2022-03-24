@@ -1,3 +1,47 @@
 # Guestbook Deploy Repository
 
-This repository is an example GitOps deployment repository with multiple environments.
+## Overview
+
+This repository is a reference GitOps deployment repository containing multiple deploy environments. This example utilizes the technique of "rendered YAML branches" for GitOps deployment.
+
+## Details
+
+The technique of using "rendered YAML branches" removes the responsibility of config templating from Argo CD, to the CI/CD pipeline. In this example, a [GitHub Action](https://github.com/akuity/guestbook-deploy/blob/main/.github/workflows/render-manifests.yml) automates the config management templating (e.g. `kustomize build`) such that fully rendered Kubernetes manifests are outputted to an environment specific branch (e.g. `env/stage`, `env/prod`). Argo CD applications are configured to deploy the manifests from the **environment branch**, as opposed to a directory in the `main` branch.
+
+The application source repository is located at https://github.com/akuity/guestbook and has a [CI/CD Pipeline](https://github.com/akuity/guestbook/blob/main/.github/workflows/ci-cd.yml) which builds new container images and automatically commits the new image tags to the [kustomize environments](https://github.com/akuity/guestbook-deploy/tree/main/env) contained in this repository.
+
+## Environments
+
+| Environment | Status |
+|----|----|
+| [Dev](https://github.com/akuity/guestbook-deploy/tree/env/dev) | [![App Status](https://cd.demo.akuity.io/api/badge?name=guestbook-dev&revision=true)](https://cd.demo.akuity.io/applications/guestbook-dev) |
+| [Stage](https://github.com/akuity/guestbook-deploy/tree/env/stage) | [![App Status](https://cd.demo.akuity.io/api/badge?name=guestbook-stage&revision=true)](https://cd.demo.akuity.io/applications/guestbook-dev) |
+| [Prod](https://github.com/akuity/guestbook-deploy/tree/env/prod) | [![App Status](https://cd.demo.akuity.io/api/badge?name=guestbook-prod&revision=true)](https://cd.demo.akuity.io/applications/guestbook-dev) |
+
+## Configuration Management
+
+This respository utilizes kustomize for configuration management of multiple environments. A common kustomize base is shared between all environments.  Environments are organized into individual `env` directories, structured in the following manner:
+
+```
+.
+├── base
+│   ├── guestbook-deploy.yaml
+│   ├── guestbook-ing.yaml
+│   ├── guestbook-svc.yaml
+│   └── kustomization.yaml
+└── env
+    ├── dev
+    │   └── kustomization.yaml
+    ├── prod
+    │   └── kustomization.yaml
+    └── stage
+        └── kustomization.yaml
+```
+
+Any changes to the kustomize configuration in `main` branch will result in the following:
+* For the `env/dev` and `env/stage` branches, the change will be automatically pushed to the environment branch resulting in immediate deployment
+* For the `env/prod` branch, a PR will be created against the branch for manual approval
+
+Details of how this is accomplished can be seen in the [GitHub Action](https://github.com/akuity/guestbook-deploy/blob/main/.github/workflows/render-manifests.yml).
+
+The source code for this repository is located at https://github.com/akuity/guestbook-deploy.
