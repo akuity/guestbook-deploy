@@ -10,13 +10,27 @@ The technique of using "rendered YAML branches" removes the responsibility of co
 
 The application source repository is located at https://github.com/akuity/guestbook and has a [CI/CD Pipeline](https://github.com/akuity/guestbook/blob/main/.github/workflows/ci-cd.yml) which builds new container images and automatically commits the new image tags to the [kustomize environments](https://github.com/akuity/guestbook-deploy/tree/main/env) contained in this repository.
 
+## Why this approach?
+
+### Advantages:
+* Easily understandable change history/diff - change is not obfuscated by config tooling
+* Use different policies per environment - e.g. automated commit/deployment to dev/stage, PR approval process and protected branch for prod
+* Upgrading Argo CD + baked-in toolchain (kustomize) is no longer a risk - templating done in CI, not by Argo CD
+* Better security - No longer at risk from vulnerabilities in tooling (helm, kustomize)
+* Safer change management - Change to a kustomize base will not immediately affect all environments
+* Improved Argo CD performance - expensive templating process (kustomize build) is no longer performed by Argo CD 
+
+### Disadvantages:
+* Additional CI automation requirements (e.g. GitHub action)
+* Does not support tools which render plain-text secrets (e.g. Kustomize + SOPS)
+
 ## Environments
 
 | Environment | Status |
 |----|----|
 | [Dev](https://github.com/akuity/guestbook-deploy/tree/env/dev) | [![App Status](https://cd.demo.akuity.io/api/badge?name=guestbook-dev&revision=true)](https://cd.demo.akuity.io/applications/guestbook-dev) |
-| [Stage](https://github.com/akuity/guestbook-deploy/tree/env/stage) | [![App Status](https://cd.demo.akuity.io/api/badge?name=guestbook-stage&revision=true)](https://cd.demo.akuity.io/applications/guestbook-dev) |
-| [Prod](https://github.com/akuity/guestbook-deploy/tree/env/prod) | [![App Status](https://cd.demo.akuity.io/api/badge?name=guestbook-prod&revision=true)](https://cd.demo.akuity.io/applications/guestbook-dev) |
+| [Stage](https://github.com/akuity/guestbook-deploy/tree/env/stage) | [![App Status](https://cd.demo.akuity.io/api/badge?name=guestbook-stage&revision=true)](https://cd.demo.akuity.io/applications/guestbook-stage) |
+| [Prod](https://github.com/akuity/guestbook-deploy/tree/env/prod) | [![App Status](https://cd.demo.akuity.io/api/badge?name=guestbook-prod&revision=true)](https://cd.demo.akuity.io/applications/guestbook-prod) |
 
 ## Configuration Management
 
