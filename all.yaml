@@ -29,7 +29,7 @@ spec:
       - env:
         - name: DEBUG
           value: "true"
-        image: ghcr.io/akuity/guestbook:000011
+        image: ghcr.io/akuity/guestbook:latest
         name: guestbook
         ports:
         - containerPort: 3000
