@@ -20,4 +20,4 @@ patchesJson6902:
 
 images:
 - name: ghcr.io/akuity/guestbook
-  newTag: 00007-c050724
+  newTag: 00009-554c55b
