@@ -29,6 +29,8 @@ spec:
       - env:
         - name: DEBUG
           value: "true"
+        - name: FOO
+          value: bar
         image: ghcr.io/akuity/guestbook:latest
         name: guestbook
         ports:
